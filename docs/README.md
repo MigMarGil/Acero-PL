@@ -26,7 +26,7 @@ let f: char = 'A';
 
 // Cadenas (UTF-8, inmutables)
 let g: string = "Hola";
-
+```
 ### 2.2 Tipos Compuestos
 // Estructuras
 type Vector3 {
@@ -65,15 +65,16 @@ let array: [10]i32 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 ## 3. Sistema de Memoria por Regiones
 3.1 Regiones Disponibles
-acero
+```acero
 @stack      // Vida de la función actual (automática)
 @arena      // Vida controlada manualmente (liberación masiva)
 @heap       // Vida dinámica (liberación automática)
 @global     // Vida del programa completo
 @thread     // Vida del hilo actual
 @message    // Vida del mensaje (para actores)
+```
 3.2 Uso de Regiones
-acero
+```acero
 fn process_frame(arena: Arena) @arena {
     // Memoria en arena para este frame
     let buffer = arena.alloc(u8, 1024);
@@ -84,9 +85,10 @@ fn process_frame(arena: Arena) @arena {
     // Liberación automática al final del frame
     arena.reset();
 }
-
+```
 // Variables globales
 global CONFIG: Config @global = Config{};
+
 3.3 Reglas de Compatibilidad
 @stack → @arena:  (arena vive más)
 
@@ -98,7 +100,7 @@ Cualquiera → @message: (mensaje se procesa rápido)
 
 4. Concurrencia por Actores
 4.1 Definición de Actores
-acero
+```acero
 actor Counter @heap {
     state: i32 = 0
     
@@ -115,8 +117,9 @@ actor Counter @heap {
 // Tipos de mensaje
 type Increment { amount: i32 }
 type Get {}
+```
 4.2 Uso de Actores
-acero
+```acero
 fn main() {
     // Crear actor
     let counter = spawn Counter();
@@ -127,8 +130,10 @@ fn main() {
     
     io.println("Counter value: ", result2); // 5
 }
+```
+
 4.3 Canales (Alternativa)
-acero
+```acero
 fn producer(ch: Channel<i32>) {
     for (let i = 0; i < 10; i += 1) {
         ch.send(i);
@@ -142,9 +147,11 @@ fn consumer(ch: Channel<i32>) {
         io.println("Received: ", value);
     }
 }
+```
+
 5. Sistema de Módulos
 5.1 Importación
-acero
+```acero
 // Importar módulo completo
 import std.io;
 
@@ -156,8 +163,10 @@ from std.math import { sin, cos, tan };
 
 // Importar todo
 from std.string import *;
+```
+
 5.2 Exportación
-acero
+```acero
 // Exportar función
 pub fn public_function() {
     // ...
@@ -172,6 +181,7 @@ pub type PublicType {
 priv fn private_function() {
     // ...
 }
+```
 6. Control de Flujo
 6.1 Condicionales
 acero
@@ -183,7 +193,7 @@ if (x > 0) {
     io.println("Cero");
 }
 6.2 Bucles
-acero
+```acero
 // While
 while (condition) {
     // ...
@@ -204,17 +214,20 @@ loop {
     // ...
     break when condition;
 }
+```
 6.3 Match (Pattern Matching)
-acero
+```acero
 match (value) {
     case 0 => io.println("Cero");
     case 1 | 2 => io.println("Uno o Dos");
     case x if x > 10 => io.println("Mayor que 10");
     case _ => io.println("Otro");
 }
+```
+
 7. Manejo de Errores
 7.1 Result Types
-acero
+```acero
 fn divide(a: i32, b: i32) -> Result<i32, string> {
     if (b == 0) {
         return Error("División por cero");
@@ -228,8 +241,9 @@ fn main() {
         case Error(msg) => io.println("Error: ", msg);
     }
 }
+```
 7.2 Defer
-acero
+```acero
 fn process_file(path: string) {
     let file = io.open(path);
     defer file.close(); // Se ejecuta al final del scope
@@ -238,6 +252,7 @@ fn process_file(path: string) {
     
     // file.close() se llama automáticamente aquí
 }
+```
 8. Compilación Incremental
 ACERO implementa compilación incremental mediante:
 
@@ -258,8 +273,9 @@ acero compile programa.acero    # ~50ms
 
 # Cambio de interfaz (módulos dependientes)
 acero compile programa.acero    # ~150ms
+
 9. Interoperabilidad con C
-acero
+```acero
 // Declarar función C
 extern fn printf(format: *const u8, ...) -> i32;
 
@@ -272,9 +288,11 @@ fn main() {
 export fn acero_function() -> i32 {
     return 42;
 }
+```
+
 10. Ejecución en Tiempo de Ejecución
 10.1 Reflection
-acero
+```acero
 type Person {
     name: string
     age: i32
@@ -292,8 +310,10 @@ fn inspect(value: any) {
         }
     }
 }
+```
+
 10.2 Metaprogramación
-acero
+```acero
 // Comptime (tiempo de compilación)
 comptime {
     // Generar código en tiempo de compilación
@@ -314,6 +334,8 @@ type Container(T) {
         return null;
     }
 }
+```
+
 11. Librería Estándar
 11.1 Módulos Principales
 std.io - Entrada/salida
@@ -333,7 +355,7 @@ std.time - Medición del tiempo
 std.test - Utilidades para testing
 
 11.2 Ejemplos
-acero
+```acero
 import std;
 
 fn main() {
@@ -357,6 +379,8 @@ fn main() {
     let elapsed = time.now() - start;
     io.println("Tiempo: ", elapsed, "ms");
 }
+```
+
 12. Guía de Estilo
 12.1 Convenciones
 Funciones: snake_case
@@ -370,7 +394,7 @@ Constantes: SCREAMING_SNAKE_CASE
 Módulos: snake_case
 
 12.2 Formato
-acero
+```acero
 // Buena
 fn calculate_area(width: f32, height: f32) -> f32 {
     return width * height;
@@ -378,8 +402,9 @@ fn calculate_area(width: f32, height: f32) -> f32 {
 
 // Mala
 fn CalculateArea(w:f32,h:f32)->f32{return w*h;}
+```
 12.3 Comentarios
-acero
+```acero
 // Comentario de una línea
 
 /*
@@ -395,6 +420,8 @@ acero
 fn double(x: i32) -> i32 {
     return x * 2;
 }
+```
+
 Apéndice A: Gramática BNF
 text
 program     = { import | declaration }
